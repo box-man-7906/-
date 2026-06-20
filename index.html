@@ -313,6 +313,81 @@
       height: 20px;
     }
 
+
+    .version-switch {
+      margin: 28px 0 10px;
+      padding: 14px;
+      background: rgba(23,27,46,.94);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .version-switch-title {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .version-switch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .version-btn {
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      color: var(--text);
+      padding: 13px 8px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .version-btn.active {
+      background: var(--accent);
+      color: #0b1020;
+      border-color: var(--accent);
+    }
+
+    body.force-mobile main {
+      width: min(100%, 560px);
+    }
+
+    body.force-mobile .grid3,
+    body.force-mobile .stage-teams,
+    body.force-mobile .result-two,
+    body.force-mobile .lineup,
+    body.force-mobile .chart-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    body.force-mobile .fortress-mode-tabs {
+      grid-template-columns: 1fr !important;
+    }
+
+    body.force-mobile h1 {
+      font-size: 20px;
+    }
+
+    body.force-pc main {
+      width: min(100%, 1180px);
+    }
+
+    body.force-pc .grid3,
+    body.force-pc .lineup {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    body.force-pc .stage-teams,
+    body.force-pc .result-two,
+    body.force-pc .chart-grid,
+    body.force-pc .fortress-mode-tabs {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+
     @media (max-width: 720px) {
       body { padding-bottom: 20px; }
 
@@ -427,6 +502,15 @@
       <p>속성을 눌러 공격 기준 상성을 확인하세요.</p>
       <div id="chartCards" class="chart-grid"></div>
     </section>
+
+    <div class="version-switch">
+      <div class="version-switch-title">보기 방식 선택</div>
+      <div class="version-switch-grid">
+        <button class="version-btn" id="pcVersionBtn" type="button">PC 버전</button>
+        <button class="version-btn" id="mobileVersionBtn" type="button">모바일 버전</button>
+      </div>
+    </div>
+
   </main>
 
   <script>
@@ -725,7 +809,23 @@
       document.querySelectorAll("[data-team-mode]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       fortressTeamMode = btn.dataset.teamMode;
-      renderFortressInputs();
+  
+    function setVersionMode(mode) {
+      document.body.classList.toggle("force-pc", mode === "pc");
+      document.body.classList.toggle("force-mobile", mode === "mobile");
+      document.getElementById("pcVersionBtn").classList.toggle("active", mode === "pc");
+      document.getElementById("mobileVersionBtn").classList.toggle("active", mode === "mobile");
+      localStorage.setItem("dragonVersionMode", mode);
+    }
+
+    document.getElementById("pcVersionBtn").addEventListener("click", () => setVersionMode("pc"));
+    document.getElementById("mobileVersionBtn").addEventListener("click", () => setVersionMode("mobile"));
+
+    const savedVersionMode = localStorage.getItem("dragonVersionMode");
+    setVersionMode(savedVersionMode === "pc" ? "pc" : "mobile");
+
+
+    renderFortressInputs();
       calculate();
     });
 
@@ -740,6 +840,22 @@
     });
 
     document.getElementById("allowDuplicate").addEventListener("change", calculate);
+
+
+    function setVersionMode(mode) {
+      document.body.classList.toggle("force-pc", mode === "pc");
+      document.body.classList.toggle("force-mobile", mode === "mobile");
+      document.getElementById("pcVersionBtn").classList.toggle("active", mode === "pc");
+      document.getElementById("mobileVersionBtn").classList.toggle("active", mode === "mobile");
+      localStorage.setItem("dragonVersionMode", mode);
+    }
+
+    document.getElementById("pcVersionBtn").addEventListener("click", () => setVersionMode("pc"));
+    document.getElementById("mobileVersionBtn").addEventListener("click", () => setVersionMode("mobile"));
+
+    const savedVersionMode = localStorage.getItem("dragonVersionMode");
+    setVersionMode(savedVersionMode === "pc" ? "pc" : "mobile");
+
 
     renderFortressInputs();
     renderChart();
